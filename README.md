@@ -93,6 +93,8 @@ The system generates a smooth, continuous graph of the signal:
 * Over-smoothing removes useful information
 * Proper thresholding is critical for accuracy
 * Visualization must balance realism and clarity
+* <img width="867" height="1156" alt="image" src="https://github.com/user-attachments/assets/acfdd6aa-2281-436b-8074-1ec5ddb84816" />
+
 
 ---
 
@@ -117,4 +119,5 @@ The project demonstrates that even low-resolution WiFi signals can be used for m
 
 ## Author
 
-Built as an experimental project exploring wireless sensing and signal-based human detection.
+Ishan Dutta | Rishit Mukherjee | Ishan Pandey | Vinayak Borkar 
+Built as part of an exploration into wireless sensing and real-time signal processing.
