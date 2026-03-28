@@ -92,6 +92,15 @@ class Radar:
         plt.xlabel("Time")
         plt.ylabel("RSSI")
         plt.show()
+        import json
+
+        output = {
+        "people_count": len(clusters),
+        "signal": smooth.tolist()
+        }
+
+with open("data.json", "w") as f:
+    json.dump(output, f)
 
     def run(self):
         threading.Thread(target=self.reader, daemon=True).start()
