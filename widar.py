@@ -35,7 +35,7 @@ class LiveMotionDetector:
         """
         Calibrate by collecting baseline data with no motion
         """
-        print(f"\n🔧 CALIBRATION PHASE")
+        print(f"\n CALIBRATION PHASE")
         print(f"   Keep area EMPTY for {duration_seconds} seconds...")
 
         start_time = time.time()
@@ -60,13 +60,13 @@ class LiveMotionDetector:
             # Set threshold: baseline mean + 2-3x standard deviation
             self.threshold = baseline_mean + 2.5 * baseline_std
 
-            print(f"\n✅ Calibration complete!")
+            print(f"\n Calibration complete!")
             print(f"   Baseline mean: {baseline_mean:.4f}")
             print(f"   Baseline std: {baseline_std:.4f}")
             print(f"   Motion threshold: {self.threshold:.4f}")
             return True
         else:
-            print("\n❌ Calibration failed - no data received")
+            print("\n Calibration failed - no data received")
             return False
 
     def get_key(self):
@@ -88,7 +88,7 @@ class LiveMotionDetector:
         Main live scanning loop
         """
         print("\n" + "=" * 50)
-        print("🎯 LIVE MOTION DETECTION")
+        print(" LIVE MOTION DETECTION")
         print("=" * 50)
         print("   Press 'q' to stop scanning")
         print("   Press 'c' to re-calibrate")
@@ -119,13 +119,13 @@ class LiveMotionDetector:
                         if is_motion and not motion_detected:
                             motion_count += 1
                             motion_detected = True
-                            print(f"⚠️  MOTION DETECTED! (Event #{motion_count})")
+                            print(f"  MOTION DETECTED! (Event #{motion_count})")
                             print(f"   Variance: {variance:.4f} > Threshold: {self.threshold:.4f}")
                         elif not is_motion:
                             motion_detected = False
 
                         # Print live variance
-                        status = "🚨 MOTION" if is_motion else "💤 IDLE"
+                        status = " MOTION" if is_motion else " IDLE"
                         print(f"   Variance: {variance:.4f} | {status}", end='\r')
 
                 except ValueError:
@@ -136,10 +136,10 @@ class LiveMotionDetector:
             # Check for user input (non-blocking)
             key = self.get_key()
             if key == 'q':
-                print("\n\n⏹️  Stopping scan...")
+                print("\n\n  Stopping scan...")
                 break
             elif key == 'c':
-                print("\n\n🔄 Re-calibrating...")
+                print("\n\n Re-calibrating...")
                 self.calibration_data = []
                 self.window.clear()
                 if self.calibrate():
@@ -157,7 +157,7 @@ class LiveMotionDetector:
         Process collected variance data to detect multiple people
         """
         if len(self.variance_data) < 10:
-            print("⚠️  Insufficient data for analysis")
+            print("  Insufficient data for analysis")
             return []
 
         # Use adaptive threshold (mean + 0.5*std)
@@ -281,7 +281,7 @@ if __name__ == "__main__":
     detector = LiveMotionDetector(port='COM9', baud=115200, window_size=20)
 
     # Calibration phase
-    print("\n⚠️  Make sure the area is EMPTY for calibration!")
+    print("\n  Make sure the area is EMPTY for calibration!")
     input("Press Enter to start calibration...")
 
     if not detector.calibrate(duration_seconds=3):
@@ -290,25 +290,25 @@ if __name__ == "__main__":
         exit()
 
     # Live scan
-    print("\n📢 Ready for motion detection!")
+    print("\n Ready for motion detection!")
     input("Press Enter to start live scan...")
 
     motion_events = detector.live_scan()
 
     # Process and visualize results
-    print(f"\n📊 Motion events detected: {motion_events}")
+    print(f"\n Motion events detected: {motion_events}")
     print("Processing data for analysis...")
 
     results = detector.process_results()
 
     # Print results
     print("\n" + "=" * 50)
-    print("📋 FINAL RESULTS")
+    print(" FINAL RESULTS")
     print("=" * 50)
 
     if results:
         for r in results:
-            print(f"👤 Person {r['person']}: {r['classification']}")
+            print(f" Person {r['person']}: {r['classification']}")
             print(f"   - Motion intensity: {r['intensity']:.3f}")
             print(f"   - Peak count: {len(r['peaks'])}")
     else:
@@ -319,4 +319,4 @@ if __name__ == "__main__":
 
     # Clean up
     detector.close()
-    print("\n✅ Scan complete!")
+    print("\n Scan complete!")
