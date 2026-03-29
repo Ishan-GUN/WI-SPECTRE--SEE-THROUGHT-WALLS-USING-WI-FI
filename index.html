@@ -104,7 +104,6 @@ async function loadData() {
         }
     });
 
-    // 🔥 generate random radar points based on people count
     if (data.people_count !== lastCount) {
         points = [];
 
@@ -123,7 +122,6 @@ async function loadData() {
 }
 
 
-// 🔥 RADAR ANIMATION
 const canvas = document.getElementById("radarCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -151,7 +149,6 @@ function animateRadar() {
 
     radius += 2;
 
-    // 🔥 glowing dots (fake positions)
     ctx.shadowColor = "lime";
     ctx.shadowBlur = 10;
     ctx.fillStyle = "lime";
