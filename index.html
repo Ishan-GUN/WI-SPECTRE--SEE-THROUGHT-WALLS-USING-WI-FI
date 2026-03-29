@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WiFi Radar Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 12px;
+            width: 80%;
+        }
+
+        #count {
+            font-size: 40px;
+            font-weight: bold;
+            color: #22c55e;
+        }
+
+        canvas {
+            border-radius: 10px;
+        }
+
+        #radarCanvas {
+            background: black;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #22c55e;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>WiFi Radar Dashboard</h1>
+
+<div class="card">
+    <h2>People Count</h2>
+    <div id="count">0</div>
+    <button onclick="loadData()">Refresh</button>
+</div>
+
+<div class="card">
+    <h2>Signal Graph</h2>
+    <canvas id="chart"></canvas>
+</div>
+
+<div class="card">
+    <h2>Radar Visualization</h2>
+    <canvas id="radarCanvas" width="400" height="400"></canvas>
+</div>
+
+<script>
+let chart;
+let signalStrength = 0;
+
+let points = [];
+let lastCount = 0;
+
+async function loadData() {
+    const res = await fetch('data.json');
+    const data = await res.json();
+
+    document.getElementById("count").innerText = data.people_count;
+
+    const labels = data.signal.map((_, i) => i);
+    signalStrength = Math.abs(data.signal[data.signal.length - 1]);
+
+    if (chart) chart.destroy();
+
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'RSSI Signal',
+                data: data.signal,
+                borderWidth: 2,
+                tension: 0.4
+            }]
+        }
+    });
+
+    // 🔥 generate random radar points based on people count
+    if (data.people_count !== lastCount) {
+        points = [];
+
+        for (let i = 0; i < data.people_count; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            let dist = Math.random() * 140;
+
+            points.push({
+                x: Math.cos(angle) * dist,
+                y: Math.sin(angle) * dist
+            });
+        }
+
+        lastCount = data.people_count;
+    }
+}
+
+
+// 🔥 RADAR ANIMATION
+const canvas = document.getElementById("radarCanvas");
+const ctx = canvas.getContext("2d");
+
+let radius = 0;
+
+function animateRadar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+
+    // outer circle
+    ctx.strokeStyle = "rgba(0,255,0,0.2)";
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 150, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // pulse
+    let pulseSize = (signalStrength / 100) * 150;
+
+    ctx.strokeStyle = "rgba(0,255,0,0.8)";
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, (radius % 150) + pulseSize, 0, Math.PI * 2);
+    ctx.stroke();
+
+    radius += 2;
+
+    // 🔥 glowing dots (fake positions)
+    ctx.shadowColor = "lime";
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = "lime";
+
+    points.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(centerX + p.x, centerY + p.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    ctx.shadowBlur = 0;
+
+    requestAnimationFrame(animateRadar);
+}
+
+animateRadar();
+loadData();
+</script>
+
+</body>
+</html>
