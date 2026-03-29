@@ -120,4 +120,4 @@ The project demonstrates that even low-resolution WiFi signals can be used for m
 ## Author
 
 Ishan Dutta | Rishit Mukherjee | Ishan Pandey | Vinayak Borkar 
-Built as part of an exploration into wireless sensing and real-time signal processing.
+*Built as part of an exploration into wireless sensing and real-time signal processing.
